@@ -30,66 +30,139 @@ public class BanSos_Game_Manager : MonoBehaviour
         // Initial draw to fill up the 3 slots at the start
         DrawCards(3);
 
+        StartCoroutine(DrawCards(3));
+
+
     }
 
     // Shuffle the drawn cards back into the deck
     public void ShuffleCards()
     {
-        // Cannot shuffle if there are fewer than 3 cards left in the deck or if no cards are drawn
-        if (drawnCardList.Count == 0 || cardInDeck.Count == 0)
+        if (cardInDeck.Count == 0 || drawnCardList.Count == 3)
         {
             Debug.Log("No cards to shuffle.");
             return;
         }
 
-        // Add drawn cards back into the deck
-        cardInDeck.AddRange(drawnCardList);
-        
-        // Clear the drawn card containers visually
-        foreach (Card card in drawnCardList)
-        {
-            Destroy(card.gameObject);
-        }
-
-        drawnCardList.Clear();
-
-        DrawCards(3);
+        StartCoroutine(ShuffleAnimation());
     }
 
-    // Draw cards from the deck and place them in the drawnCardContainers
-    public void DrawCards(int numberOfCards)
+    // Animation for drawing cards
+    IEnumerator DrawCards(int numberOfCards)
     {
         if (cardInDeck.Count == 0)
         {
             Debug.Log("No cards left in the deck.");
-            return;
+            yield break;
         }
 
-        // Draw cards up to the maximum available or the requested amount
         int cardsToDraw = Mathf.Min(numberOfCards, cardInDeck.Count);
 
         for (int i = 0; i < cardsToDraw; i++)
         {
-            // Select a random card from the deck
             int randomIndex = Random.Range(0, cardInDeck.Count);
             Card drawnCard = cardInDeck[randomIndex];
 
-            
-
-            // Place the drawn card into its container (visually)
             if (i < drawnCardContainers.Count)
             {
                 GameObject container = drawnCardContainers[i];
-
-                // Instantiate the card as a child of the container
                 Card cardInstance = Instantiate(drawnCard, container.transform);
-                cardInstance.transform.localPosition = Vector3.zero;  // Reset position in case of layout issues
+                cardInstance.transform.localPosition = Vector3.zero;
+                cardInstance.gameObject.SetActive(true);
 
                 drawnCardList.Add(cardInstance);
-            }
+                cardInDeck.RemoveAt(randomIndex);
 
-            cardInDeck.RemoveAt(randomIndex);
+                // Animate the card
+                yield return StartCoroutine(DrawCardAnimation(cardInstance.gameObject, container));
+            }
         }
+    }
+
+    // Animation coroutine for drawing a card
+    IEnumerator DrawCardAnimation(GameObject card, GameObject targetContainer)
+    {
+        RectTransform cardRect = card.GetComponent<RectTransform>();
+        RectTransform shuffleButtonRect = shuffleButton.GetComponent<RectTransform>();
+
+        Vector3 startPos = shuffleButtonRect.position;
+        Vector3 targetPos = targetContainer.transform.position;
+        Vector2 startSize = cardRect.sizeDelta;
+
+        // Start with height set to 0 (invisible)
+        cardRect.sizeDelta = new Vector2(cardRect.sizeDelta.x, 0);
+        cardRect.position = startPos;
+
+        float duration = 0.2f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            // Move the card to its target
+            cardRect.position = Vector3.Lerp(startPos, targetPos, t);
+
+            // Increase the height of the card as it moves up
+            cardRect.sizeDelta = new Vector2(cardRect.sizeDelta.x, Mathf.Lerp(0, startSize.y, t));
+
+            yield return null;
+        }
+
+        // Ensure it reaches the final position
+        cardRect.position = targetPos;
+        cardRect.sizeDelta = new Vector2(cardRect.sizeDelta.x, startSize.y);
+    }
+
+    // Animation for shuffling cards back into the deck
+    IEnumerator ShuffleAnimation()
+    {
+        foreach (Card card in drawnCardList)
+        {
+            Card cardInstance = Instantiate(card);
+            GameObject cardObj = card.gameObject;
+            GameObject cardContainer = cardObj.transform.parent.gameObject;
+
+            cardInDeck.Add(cardInstance);
+
+            yield return StartCoroutine(ShuffleCardAnimation(cardObj, cardContainer));
+        }
+
+        drawnCardList.Clear();
+
+        // Shuffle deck after the animation completes
+        StartCoroutine(DrawCards(3));
+    }
+
+    // Animation coroutine for shuffling a card
+    IEnumerator ShuffleCardAnimation(GameObject card, GameObject sourceContainer)
+    {
+        RectTransform cardRect = card.GetComponent<RectTransform>();
+        RectTransform shuffleButtonRect = shuffleButton.GetComponent<RectTransform>();
+
+        Vector3 startPos = sourceContainer.transform.position;
+        Vector3 targetPos = shuffleButtonRect.position;
+        Vector2 startSize = cardRect.sizeDelta;
+
+        float duration = 0.2f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            // Move the card to the shuffle button
+            cardRect.position = Vector3.Lerp(startPos, targetPos, t);
+
+            // Decrease the height of the card as it moves toward the shuffle button
+            cardRect.sizeDelta = new Vector2(cardRect.sizeDelta.x, Mathf.Lerp(startSize.y, 0, t));
+
+            yield return null;
+        }
+
+        Destroy(card.gameObject);  // Remove the card after it is shuffled
     }
 
 

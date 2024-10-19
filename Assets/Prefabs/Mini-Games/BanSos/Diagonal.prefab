@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 460929207382617067}
   - component: {fileID: 495158102979366721}
   m_Layer: 5
-  m_Name: LeftRight
+  m_Name: Diagonal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,9 +137,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unlockablePositions:
   - xUnlock: 1
-    yUnlock: 0
+    yUnlock: 1
+  - xUnlock: 1
+    yUnlock: -1
   - xUnlock: -1
-    yUnlock: 0
+    yUnlock: 1
+  - xUnlock: -1
+    yUnlock: -1
 --- !u!225 &495158102979366721
 CanvasGroup:
   m_ObjectHideFlags: 0

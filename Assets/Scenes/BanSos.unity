@@ -906,10 +906,11 @@ MonoBehaviour:
   - {fileID: 19424511}
   - {fileID: 771937487}
   cardInDeck:
+  - {fileID: 460929207382617067, guid: bc86a0ce5f8839c4d82cb9191149444c, type: 3}
+  - {fileID: 460929207382617067, guid: 1e6997d416798fb4291192d7df948ac5, type: 3}
   - {fileID: 460929207382617067, guid: 98226cd4e75b2594f988730ccffb84c9, type: 3}
-  - {fileID: 460929207382617067, guid: 98226cd4e75b2594f988730ccffb84c9, type: 3}
-  - {fileID: 460929207382617067, guid: 98226cd4e75b2594f988730ccffb84c9, type: 3}
-  - {fileID: 460929207382617067, guid: 98226cd4e75b2594f988730ccffb84c9, type: 3}
+  - {fileID: 460929207382617067, guid: 5bc9d428d796d8048845451bc0ee5dbf, type: 3}
+  - {fileID: 460929207382617067, guid: 102badd0b6fddec4aa68f83a977331c4, type: 3}
   drawnCardList: []
   drawnCardContainers:
   - {fileID: 1936120296}
