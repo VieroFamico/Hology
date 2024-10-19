@@ -2619,8 +2619,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   general_Game_Manager: {fileID: 0}
   currTimeDisplay: {fileID: 585015630}
-  startingDayClip: {fileID: 8300000, guid: 2812caefa8307f64fa16c71d0d80c919, type: 3}
-  endingDayClip: {fileID: 8300000, guid: 2812caefa8307f64fa16c71d0d80c919, type: 3}
+  startingDayClip: {fileID: 8300000, guid: 2a3fc414571d3434780d3ebb4851582c, type: 3}
+  endingDayClip: {fileID: 8300000, guid: 2a3fc414571d3434780d3ebb4851582c, type: 3}
   startDayPanel: {fileID: 1349644249}
   startDayButton: {fileID: 192324383}
   endDayPanel: {fileID: 334626416}
@@ -2646,6 +2646,7 @@ MonoBehaviour:
   regularLight: {fileID: 0}
   emergencyLight: {fileID: 0}
   Mini_Games: []
+  dayHasStarted: 0
   miniGames_TimeLimitDecrease_PerDay: 3
   flood_WaveSpeedIncrease_PerDay: 1
 --- !u!1 &1683795759
