@@ -85,13 +85,13 @@ public class MazeManager : MonoBehaviour
             if (contact.distance < 0.01f)
             {
                 var col = world.colliderHandles[contact.bodyB].owner;
-                if (colorizers[0].collider == col)
+                if (colorizers[0].obiCollider == col)
                 {
                     solver.userData[contact.bodyA] = colorizers[0].color;
                     if (coloredParticles.Add(contact.bodyA))
                         UpdateScore(finishedParticles.Count, coloredParticles.Count);
                 }
-                else if (colorizers[1].collider == col)
+                else if (colorizers[1].obiCollider == col)
                 {
                     solver.userData[contact.bodyA] = colorizers[1].color;
                     if (coloredParticles.Add(contact.bodyA))
