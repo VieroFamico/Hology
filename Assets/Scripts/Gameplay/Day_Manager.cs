@@ -46,7 +46,7 @@ public class Day_Manager : MonoBehaviour
 
     private void Update()
     {
-        if(!isStoppingDayTimer)
+        if(isStoppingDayTimer)
         {
             return;
         }
