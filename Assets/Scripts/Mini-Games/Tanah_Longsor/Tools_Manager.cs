@@ -13,7 +13,7 @@ public class Tools_Manager : MonoBehaviour
 
     [Header("Drill Tools")]
     public Button drillButton;
-    public Transform drillRadiusIndicator;
+    public SpriteRenderer drillRadiusIndicator;
     public float drillRadius;
     public float drillStabilityDecrease;
     public float drillDuration = 5f; // Time it takes for the drill to complete in seconds
@@ -22,8 +22,11 @@ public class Tools_Manager : MonoBehaviour
     public Button acousticDetectorButton;
     public SpriteRenderer acousticDetectorIndicator;
     public float acousticDetector_MaxRadius;
+    public float acousticDetector_MidRadius;
     public float acousticDetector_MinRadius;
     public AudioSource acousticAudioSource;
+    public AudioClip farAudioClip;
+    public AudioClip nearAudioClip;
     public LayerMask victimLayerMask;
 
     public LayerMask terrainLayerMask;
@@ -80,10 +83,14 @@ public class Tools_Manager : MonoBehaviour
                 isUsingDrill = true;
                 isUsingAcoustic = false;
                 acousticAudioSource.Stop(); // Stop acoustic detector sound
+                acousticDetectorIndicator.gameObject.SetActive(false);
+                drillRadiusIndicator.gameObject.SetActive(true);
                 break;
             case "Acoustic":
                 isUsingDrill = false;
                 isUsingAcoustic = true;
+                acousticDetectorIndicator.gameObject.SetActive(true);
+                drillRadiusIndicator.gameObject.SetActive(false);
                 break;
         }
     }
@@ -116,6 +123,15 @@ public class Tools_Manager : MonoBehaviour
                     {
                         float distanceToVictim = Vector3.Distance(detectPosition, currentVictim.transform.position);
 
+
+                        if(distanceToVictim > acousticDetector_MidRadius)
+                        {
+                            acousticAudioSource.clip = farAudioClip;
+                        }
+                        else if(distanceToVictim <= acousticDetector_MidRadius)
+                        {
+                            acousticAudioSource.clip = farAudioClip;
+                        }
                         // Adjust audio volume based on proximity to the victim
                         float volume = Mathf.Lerp(1f, 0f, distanceToVictim / acousticDetector_MaxRadius);
                         acousticAudioSource.volume = volume;
@@ -149,7 +165,7 @@ public class Tools_Manager : MonoBehaviour
             {
                 // Display an area around the mouse pointer like a radar
                 Vector3 drillPosition = hit.point;
-                drillRadiusIndicator.position = drillPosition;
+                drillRadiusIndicator.transform.position = drillPosition;
                 if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
                 {
                     StartCoroutine(StartDrilling(drillPosition));

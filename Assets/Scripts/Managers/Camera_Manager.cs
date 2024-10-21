@@ -8,12 +8,14 @@ public class Camera_Manager : MonoBehaviour
 {
     public static Camera_Manager instance;
 
+    [Header("Cameras Variable")]
     public CinemachineVirtualCamera virtualCamera;
     public Transform leftPosition;  // The transform of the left position
     public Transform centerPosition; // The transform of the center position
     public Transform rightPosition; // The transform of the right position
     public float cameraMoveSpeed = 2f; // Speed for the camera to move to target
 
+    [Header("Buttons")]
     public Button leftButton;  // Left button UI
     public Button rightButton; // Right button UI
     public float uiShowThreshold = 0.05f; // 1/20th of the screen width = 0.05 (5% of the screen width)
@@ -56,7 +58,19 @@ public class Camera_Manager : MonoBehaviour
             return;
         }
 
-        // Calculate the threshold in pixels based on screen width
+        if (General_Game_Manager.instance.isInMiniGames)
+        {
+            leftButton.gameObject.SetActive(false);
+            rightButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            HandleChangingCamera();
+        }
+    }
+
+    public void HandleChangingCamera()
+    {
         float screenThreshold = Screen.width * uiShowThreshold;
 
         // Show or hide the left button

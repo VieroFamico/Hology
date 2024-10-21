@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class BanSos_Game_Manager : MonoBehaviour
 {
+    public bool monitorIsActive;
+
     public int rowSize = 2;  // Number of rows (vertical axis)
     public int colSize = 3;  // Number of columns (horizontal axis)
     public GameObject[][] grid;  // 2D array to store the grid slots

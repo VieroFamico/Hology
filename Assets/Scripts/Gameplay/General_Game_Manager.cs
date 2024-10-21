@@ -18,6 +18,7 @@ public class General_Game_Manager : MonoBehaviour
     public Light emergencyLight;
 
     [Header("Mini-Games to Solve")]
+    public bool isInMiniGames = false;
     public List<GameObject> Mini_Games;
 
     [Header("Day Has Started")]

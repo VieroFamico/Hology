@@ -151,8 +151,5 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                 }
             }
         }
-
-        
-
     }
 }
