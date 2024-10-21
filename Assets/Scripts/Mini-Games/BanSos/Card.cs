@@ -86,7 +86,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             foreach (GameObject slot in row)
             {
                 SlotPlacement slotPlacement = slot.GetComponent<SlotPlacement>();
-                if (slotPlacement != null && slotPlacement.placedCard != null && slotPlacement.isPlacable)
+                if (slotPlacement != null && slotPlacement.placedCard == null && slotPlacement.isPlacable)
                 {
                     RectTransform slotRect = slot.GetComponent<RectTransform>();
 
