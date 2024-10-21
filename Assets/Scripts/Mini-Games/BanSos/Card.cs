@@ -33,12 +33,21 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         if (isPlaced) return;  // Prevent dragging after placement
         canvasGroup.blocksRaycasts = false;
         originalParent = transform.parent;  // Remember the original parent
+
+        transform.SetParent(gameManager.worldSpaceCanvas.transform);
+
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (isPlaced) return;
-        cardRectTransform.position = Input.mousePosition;
+        //cardRectTransform.position = Input.mousePosition;
+
+        Vector3 worldPosition;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(gameManager.worldSpaceCanvas.transform as RectTransform, eventData.position, eventData.pressEventCamera, out worldPosition);
+        cardRectTransform.position = worldPosition;
+
+
         //cardRectTransform.anchoredPosition += eventData.delta / gameManager.canvas.scaleFactor; // For pixel perfect drag
     }
 
@@ -64,19 +73,44 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     private SlotPlacement GetNearestSlot(Vector2 pointerPosition)
     {
+        SlotPlacement nearestSlot = null;
+        float nearestDistance = float.MaxValue;
+
+        // Convert screen position to world position
+        Vector3 worldPosition;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(gameManager.worldSpaceCanvas.transform as RectTransform, pointerPosition, gameManager.mainCamera, out worldPosition);
+
         // Raycast to check if the pointer is over a slot
         foreach (GameObject[] row in gameManager.grid)
         {
             foreach (GameObject slot in row)
             {
                 SlotPlacement slotPlacement = slot.GetComponent<SlotPlacement>();
-                if (slotPlacement != null && slotPlacement.isPlacable && RectTransformUtility.RectangleContainsScreenPoint(slot.GetComponent<RectTransform>(), pointerPosition))
+                if (slotPlacement != null && slotPlacement.placedCard != null && slotPlacement.isPlacable)
                 {
-                    return slotPlacement;
+                    RectTransform slotRect = slot.GetComponent<RectTransform>();
+
+                    // Check if the pointer is within the slot's rect before calculating the distance
+                    if (RectTransformUtility.RectangleContainsScreenPoint(slotRect, pointerPosition, gameManager.mainCamera))
+                    {
+                        // Convert the slot's world position to a world point
+                        Vector3 slotWorldPosition = slotRect.position;
+
+                        // Measure the distance from the pointer's world position to the slot's position
+                        float distance = Vector3.Distance(worldPosition, slotWorldPosition);
+
+                        // Find the nearest slot by comparing distances
+                        if (distance < nearestDistance)
+                        {
+                            nearestDistance = distance;
+                            nearestSlot = slotPlacement;
+                        }
+                    }
                 }
             }
         }
-        return null;
+        return nearestSlot;
+
     }
 
     private void PlaceCardInSlot(SlotPlacement slot)
@@ -111,7 +145,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             if (unlockX >= 0 && unlockX < gameManager.colSize && unlockY >= 0 && unlockY < gameManager.rowSize)
             {
                 SlotPlacement slotToUnlock = gameManager.grid[unlockY][unlockX].GetComponent<SlotPlacement>();
-                if (slotToUnlock != null)
+                if (slotToUnlock != null && slotToUnlock.placedCard == null)
                 {
                     slotToUnlock.UnlockSlot();  // Unlock the adjacent slot
                 }

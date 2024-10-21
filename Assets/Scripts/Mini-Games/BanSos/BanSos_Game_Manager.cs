@@ -17,11 +17,15 @@ public class BanSos_Game_Manager : MonoBehaviour
     public List<GameObject> drawnCardContainers;  // UI containers for displaying drawn cards (3 slots)
 
     public Button shuffleButton;  // Button for shuffling
+    public Canvas worldSpaceCanvas;
+    public Camera mainCamera;
 
     public bool hasPlacedFirstCard = false;
 
     void Start()
     {
+        mainCamera = Camera.main;
+
         AssignSlotCoordinates();
         UnlockAllSlots();
 
