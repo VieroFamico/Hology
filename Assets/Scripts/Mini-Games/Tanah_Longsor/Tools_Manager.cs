@@ -15,8 +15,8 @@ public class Tools_Manager : MonoBehaviour
     public Button drillButton;
     public SpriteRenderer drillRadiusIndicator;
     public float drillRadius;
-    public float drillStabilityDecrease;
     public float drillDuration = 5f; // Time it takes for the drill to complete in seconds
+    public float targetZPosAfterDrill = 0f;
 
     [Header("Acoustic Detector")]
     public Button acousticDetectorButton;
@@ -89,6 +89,7 @@ public class Tools_Manager : MonoBehaviour
             case "Acoustic":
                 isUsingDrill = false;
                 isUsingAcoustic = true;
+                acousticAudioSource.Play();
                 acousticDetectorIndicator.gameObject.SetActive(true);
                 drillRadiusIndicator.gameObject.SetActive(false);
                 break;
@@ -113,24 +114,41 @@ public class Tools_Manager : MonoBehaviour
                 acousticDetectorIndicator.transform.position = detectPosition;
 
                 // Detect victims within range using a circular radius (like a radar sweep)
-                Collider[] victims = Physics.OverlapSphere(detectPosition, acousticDetector_MaxRadius, victimLayerMask);
+                Collider[] possibleVictims = Physics.OverlapSphere(detectPosition, acousticDetector_MaxRadius, victimLayerMask);
 
                 // Play sound and give a visual cue for detection
-                foreach (Collider victim in victims)
+                foreach (Collider victim in possibleVictims)
                 {
-                    currentVictim = victim.GetComponent<Victim>();
-                    if (currentVictim != null)
+                    Victim nearbyVictim = victim.GetComponent<Victim>();
+                    if (nearbyVictim != null)
                     {
                         float distanceToVictim = Vector3.Distance(detectPosition, currentVictim.transform.position);
 
-
                         if(distanceToVictim > acousticDetector_MidRadius)
                         {
-                            acousticAudioSource.clip = farAudioClip;
+
+                            if(acousticAudioSource.clip != farAudioClip)
+                            {
+                                acousticAudioSource.clip = farAudioClip;
+                                acousticAudioSource.Play();
+                            }
+                            else
+                            {
+                                acousticAudioSource.clip = farAudioClip;
+                            }
+                            
                         }
                         else if(distanceToVictim <= acousticDetector_MidRadius)
                         {
-                            acousticAudioSource.clip = farAudioClip;
+                            if (acousticAudioSource.clip != nearAudioClip)
+                            {
+                                acousticAudioSource.clip = nearAudioClip;
+                                acousticAudioSource.Play();
+                            }
+                            else
+                            {
+                                acousticAudioSource.clip = nearAudioClip;
+                            }
                         }
                         // Adjust audio volume based on proximity to the victim
                         float volume = Mathf.Lerp(1f, 0f, distanceToVictim / acousticDetector_MaxRadius);
@@ -160,17 +178,13 @@ public class Tools_Manager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, terrainLayerMask))
         {
-            // Check if we are over terrain
-            if (hit.collider.CompareTag("Terrain"))
+            // Display an area around the mouse pointer like a radar
+            Vector3 drillPosition = hit.point;
+            drillRadiusIndicator.transform.position = drillPosition;
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
-                // Display an area around the mouse pointer like a radar
-                Vector3 drillPosition = hit.point;
-                drillRadiusIndicator.transform.position = drillPosition;
-                if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-                {
-                    StartCoroutine(StartDrilling(drillPosition));
-                }
-                
+                Debug.Log(drillPosition);
+                StartCoroutine(StartDrilling(drillPosition));
             }
         }
 
@@ -185,19 +199,38 @@ public class Tools_Manager : MonoBehaviour
 
         vCamShake.m_FrequencyGain = 1;
 
-        while (drillTimer < drillDuration)
-        {
-            drillTimer += Time.deltaTime;
-            tanahLongsorManager.currStability -= drillStabilityDecrease * Time.deltaTime;
-            yield return null;
-        }
+        Victim victim = null;
+        float victimCurrZPos = 0;
+        float targetZPos = targetZPosAfterDrill;
 
-        tanahLongsorManager.currStability = drillStabilityDecrease * drillDuration;
 
         float distanceToVictim = Vector3.Distance(drillPosition, currentVictim.transform.position);
 
         if (distanceToVictim < drillRadius)
         {
+            victim = currentVictim;
+            victimCurrZPos = victim.transform.position.z;
+        }
+
+
+        while (drillTimer < drillDuration)
+        {
+            if (victim)
+            {
+                victim.gameObject.transform.position = new Vector3(victim.transform.position.x,
+                victim.transform.position.y,
+                Mathf.Lerp(victimCurrZPos, targetZPos, drillTimer / drillDuration));
+            }
+            
+
+            drillTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (victim)
+        {
+            victim.gameObject.transform.position = new Vector3(victim.transform.position.x,
+                victim.transform.position.y, targetZPos);
             RescueVictim(currentVictim);
         }
         else

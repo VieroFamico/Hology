@@ -103,7 +103,7 @@ public class Day_Manager : MonoBehaviour
         // Calculate total time in minutes (from start to now)
         float totalTimeInMinutes = currDayTimer + (hourStart * 60f + minuteStart);
 
-        Debug.Log(totalTimeInMinutes);
+        
 
         // Extract hours and minutes from total minutes
         hours = Mathf.FloorToInt(totalTimeInMinutes / 60f) % 24; // Ensure hours are in 24-hour format

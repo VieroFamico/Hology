@@ -3004,6 +3004,7 @@ MonoBehaviour:
   tutorialPanels: []
   regularLight: {fileID: 0}
   emergencyLight: {fileID: 0}
+  isInMiniGames: 0
   Mini_Games: []
   dayHasStarted: 0
   miniGames_TimeLimitDecrease_PerDay: 3

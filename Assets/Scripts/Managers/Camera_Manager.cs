@@ -20,7 +20,9 @@ public class Camera_Manager : MonoBehaviour
     public Button rightButton; // Right button UI
     public float uiShowThreshold = 0.05f; // 1/20th of the screen width = 0.05 (5% of the screen width)
 
-    private Transform currentTarget;
+    [Header("Monitor")]
+    public Monitor_Interaction monitor_Interaction;
+
     private Coroutine moveCoroutine;
     private int currPos = 1; // 0 = left, 1 = center, 2 = right
 
@@ -38,8 +40,6 @@ public class Camera_Manager : MonoBehaviour
 
     void Start()
     {
-        // Set the initial camera target to the center screen position or a default value
-        currentTarget = centerPosition ? centerPosition : virtualCamera.transform;
         MoveCameraToTarget(currPos);  // Start at the center
 
         // Initially disable the buttons (they will show when mouse gets close to the screen edges)
@@ -67,6 +67,12 @@ public class Camera_Manager : MonoBehaviour
         {
             HandleChangingCamera();
         }
+    }
+
+    public void HandleChangingCamera(bool canChange)
+    {
+        leftButton.gameObject.SetActive(canChange && Input.mousePosition.x <= Screen.width * uiShowThreshold);
+        rightButton.gameObject.SetActive(canChange && Input.mousePosition.x >= Screen.width * (1f - uiShowThreshold));
     }
 
     public void HandleChangingCamera()
@@ -116,19 +122,16 @@ public class Camera_Manager : MonoBehaviour
         {
             currPos = 0;
             moveCoroutine = StartCoroutine(LerpCameraToTarget(leftPosition));
-            currentTarget = leftPosition;
         }
         else if (target == 1 && currPos != 1)
         {
             currPos = 1;
             moveCoroutine = StartCoroutine(LerpCameraToTarget(centerPosition));
-            currentTarget = centerPosition;
         }
         else if (target == 2 && currPos != 2)
         {
             currPos = 2;
             moveCoroutine = StartCoroutine(LerpCameraToTarget(rightPosition));
-            currentTarget = rightPosition;
         }
         leftButton.gameObject.SetActive(false);
         rightButton.gameObject.SetActive(false);

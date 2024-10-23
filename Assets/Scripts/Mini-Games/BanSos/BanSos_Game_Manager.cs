@@ -18,11 +18,18 @@ public class BanSos_Game_Manager : MonoBehaviour
     public List<Card> drawnCardList = new List<Card>();  // Currently drawn cards
     public List<GameObject> drawnCardContainers;  // UI containers for displaying drawn cards (3 slots)
 
+    [Header("Dependencies")]
     public Button shuffleButton;  // Button for shuffling
     public Canvas worldSpaceCanvas;
     public Camera mainCamera;
 
+    [Header("Tutorial")]
+    public Button TutorialButton;
+    public GameObject tutorial;
+
     public bool hasPlacedFirstCard = false;
+
+    public bool hasStarted = false;
 
     void Start()
     {
@@ -34,11 +41,20 @@ public class BanSos_Game_Manager : MonoBehaviour
         shuffleButton.onClick.AddListener(ShuffleCards);
 
         // Initial draw to fill up the 3 slots at the start
+
+        StartCoroutine(StartingProcess());
+    }
+
+    private IEnumerator StartingProcess()
+    {
+        while (!General_Game_Manager.instance.dayHasStarted)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+
         DrawCards(3);
 
         StartCoroutine(DrawCards(3));
-
-
     }
 
     // Shuffle the drawn cards back into the deck
