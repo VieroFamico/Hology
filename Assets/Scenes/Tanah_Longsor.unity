@@ -308,18 +308,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &399548402 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8335674141887708561, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-    type: 3}
-  m_PrefabInstance: {fileID: 629677213}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &629677213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -328,16 +316,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 305330441880267037, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.27
+      objectReference: {fileID: 0}
     - target: {fileID: 2268475642013244590, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
         type: 3}
       propertyPath: m_Name
       value: Tanah_Longsor
       objectReference: {fileID: 0}
-    - target: {fileID: 4353503422166415561, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
+    - target: {fileID: 5488139255231308590, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
         type: 3}
-      propertyPath: victimToRescueText
-      value: 
-      objectReference: {fileID: 399548402}
+      propertyPath: m_LocalPosition.z
+      value: -1.27
+      objectReference: {fileID: 0}
     - target: {fileID: 5572168349066527691, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -347,16 +340,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5611882961240900652, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: drillRadius
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6526349738619481723, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Name
-      value: AmountToRescueTxt
       objectReference: {fileID: 0}
     - target: {fileID: 7942046724606000972, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
         type: 3}
@@ -407,31 +390,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656963661039239629, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 6.390785
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656963661039239629, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 4.014533
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656963661039239629, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Center.x
-      value: 0.08790494
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656963661039239629, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 0.0000000053398543
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656963661039239629, guid: d531c1fcbfc8bae4cb6d463c51383a6d,
-        type: 3}
-      propertyPath: m_Center.z
-      value: 0.04479397
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

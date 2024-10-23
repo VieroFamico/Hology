@@ -8,13 +8,14 @@ public class Day_Manager : MonoBehaviour
 {
     [Header("Reference")]
     public General_Game_Manager general_Game_Manager;
-    public TextMeshProUGUI currTimeDisplay;
+    public List<TextMeshProUGUI> currTimeDisplay;
+    public List<TextMeshProUGUI> currDayDisplay;
     public AudioClip startingDayClip;
     public AudioClip endingDayClip;
 
-    [Header("Start Day UI References")]
+    /*[Header("Start Day UI References")]
     public GameObject startDayPanel;
-    public Button startDayButton;
+    public Button startDayButton;*/
 
     [Header("End Day UI References")]
     public GameObject endDayPanel;
@@ -37,10 +38,13 @@ public class Day_Manager : MonoBehaviour
     {
         general_Game_Manager = General_Game_Manager.instance;
 
-        startDayButton.onClick.AddListener(StartDay);
+        //startDayButton.onClick.AddListener(StartDay);
+
         endDayButton.onClick.AddListener(EndDay);
 
         UpdateTimerDisplay(hourStart, minuteStart);
+
+        isStoppingDayTimer = true;
 
     }
 
@@ -63,20 +67,25 @@ public class Day_Manager : MonoBehaviour
 
     public void Initialize()
     {
+        UpdateDayDisplay();
+        UpdateTimer();
         isStoppingDayTimer = true;
-        ShowStartDayPanel();
+
+        StartDay();
+
+        //ShowStartDayPanel();
     }
 
-    public void ShowStartDayPanel()
+    /*public void ShowStartDayPanel()
     {
         startDayPanel.SetActive(true);
         endDayPanel.SetActive(false);
-    }
+    }*/
 
     public void ShowEndDayPanel()
     {
         endDayPanel.SetActive(true);
-        startDayPanel.SetActive(false);
+        //startDayPanel.SetActive(false);
     }
 
     public void StartDay()
@@ -84,8 +93,9 @@ public class Day_Manager : MonoBehaviour
         isStoppingDayTimer = false;
         currDayTimer = 0;
         Audio_Manager.instance.PlaySFX(startingDayClip);
-        startDayPanel.SetActive(false);
+        //startDayPanel.SetActive(false);
         general_Game_Manager.dayHasStarted = true;
+        UpdateDayDisplay();
     }
 
     public void EndDay()
@@ -116,8 +126,18 @@ public class Day_Manager : MonoBehaviour
     private void UpdateTimerDisplay(float hour, float minute)
     {
         // Format the time to always have two digits for hours and minutes
-        currTimeDisplay.text = $"{hour:00}:{minute:00}";
+
+        foreach(TextMeshProUGUI timeDisplay in currTimeDisplay)
+        {
+            timeDisplay.text = $"{hour:00}:{minute:00}";
+        }
     }
 
-
+    private void UpdateDayDisplay()
+    {
+        foreach(TextMeshProUGUI dayDisplay in currDayDisplay)
+        {
+            dayDisplay.text = currDay.ToString();
+        }
+    }
 }

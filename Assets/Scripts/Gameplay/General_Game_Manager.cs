@@ -12,6 +12,13 @@ public class General_Game_Manager : MonoBehaviour
 
     [Header("UI References")]
     public List<GameObject> tutorialPanels;
+    public Button closeTutorial;
+    public GameObject pauseMenu;
+    private int currTutorialIndex;
+
+    [Header("Wake Up and Sleep Animator")]
+    private Camera_Manager cameraManager;
+    private Animator cameraAnimator;
 
     [Header("Environment Variables")]
     public Light regularLight;
@@ -28,6 +35,8 @@ public class General_Game_Manager : MonoBehaviour
     public float miniGames_TimeLimitDecrease_PerDay = 3f; // in seconds
     public float flood_WaveSpeedIncrease_PerDay = 1f;
 
+    private bool hasDoneBeginnerTutorial = false;
+
     private void Awake()
     {
         if(instance == null)
@@ -41,15 +50,72 @@ public class General_Game_Manager : MonoBehaviour
     }
     void Start()
     {
-        Initialize();
+        cameraManager = Camera_Manager.instance;
+        cameraAnimator = cameraManager.virtualCamera.GetComponent<Animator>();
 
-        
+        closeTutorial.onClick.AddListener(CloseTutorial);
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void Pre_Initialize()
+    {
+        cameraAnimator.SetTrigger("StartDay");
+
+        StartCoroutine(DisableAnimatorAfter(1.5f));
+    }
+
+    private IEnumerator DisableAnimatorAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        cameraAnimator.enabled = false;
+
+        Tutorial();
+    }
+
+    private void Tutorial()
+    {
+        if (hasDoneBeginnerTutorial)
+        {
+            Initialize();
+            return;
+        }
+        else
+        {
+            currTutorialIndex = 0;
+            ShowAllTutorial();
+            hasDoneBeginnerTutorial = true;
+        }
+    }
+    private void ShowAllTutorial()
+    {
+        foreach(GameObject tutorial in tutorialPanels)
+        {
+            tutorial.gameObject.SetActive(true);
+        }
+        closeTutorial.gameObject.SetActive(true);
+    }
+
+    private void CloseTutorial()
+    {
+        if(currTutorialIndex >= tutorialPanels.Count)
+        {
+            return;
+        }
+        tutorialPanels[currTutorialIndex].SetActive(false);
+
+        currTutorialIndex += 1;
+
+        if(currTutorialIndex >= tutorialPanels.Count)
+        {
+            closeTutorial.gameObject.SetActive(false);
+            Initialize();
+        }
     }
 
     public void Initialize()

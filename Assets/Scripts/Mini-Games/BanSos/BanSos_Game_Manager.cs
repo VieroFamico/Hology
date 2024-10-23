@@ -18,15 +18,22 @@ public class BanSos_Game_Manager : MonoBehaviour
     public List<Card> drawnCardList = new List<Card>();  // Currently drawn cards
     public List<GameObject> drawnCardContainers;  // UI containers for displaying drawn cards (3 slots)
 
+    public List<SlotPlacement> registeredSlotPlacements;
+
     [Header("Dependencies")]
     public Button shuffleButton;  // Button for shuffling
     public Canvas worldSpaceCanvas;
     public Camera mainCamera;
 
     [Header("Tutorial")]
-    public Button TutorialButton;
+    public Button tutorialButton;
+    public Button closeTutorial;
     public GameObject tutorial;
 
+    [Header("Winning and Losing")]
+    public GameObject winLogo;
+    public GameObject loseLogo;
+    
     public bool hasPlacedFirstCard = false;
 
     public bool hasStarted = false;
@@ -39,11 +46,30 @@ public class BanSos_Game_Manager : MonoBehaviour
         UnlockAllSlots();
 
         shuffleButton.onClick.AddListener(ShuffleCards);
+        tutorialButton.onClick.AddListener(ShowTutorial);
+        closeTutorial.onClick.AddListener(CloseTutorial);
+
+        winLogo.SetActive(false);
+        loseLogo.SetActive(false);
 
         // Initial draw to fill up the 3 slots at the start
 
         StartCoroutine(StartingProcess());
     }
+
+    #region Tutorial
+
+    private void ShowTutorial()
+    {
+        tutorial.SetActive(true);
+    }
+
+    private void CloseTutorial()
+    {
+        tutorial.SetActive(false);
+    }
+
+    #endregion
 
     private IEnumerator StartingProcess()
     {
@@ -51,8 +77,6 @@ public class BanSos_Game_Manager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.2f);
         }
-
-        DrawCards(3);
 
         StartCoroutine(DrawCards(3));
     }
@@ -219,6 +243,8 @@ public class BanSos_Game_Manager : MonoBehaviour
                     slotPlacement.xCoordinate = x;
                     slotPlacement.yCoordinate = y;
 
+                    registeredSlotPlacements.Add(slotPlacement);
+
                     index++;
                 }
             }
@@ -233,6 +259,37 @@ public class BanSos_Game_Manager : MonoBehaviour
             // Remove the card from the drawn list
             drawnCardList.Remove(card);
         }
+
+        if (cardInDeck.Count == 0 && drawnCardList.Count == 0)
+        {
+            CompleteBanSosGame();
+            return;
+        }
+
+        bool isFailed = true;
+
+        foreach(SlotPlacement slotPlacement in registeredSlotPlacements)
+        {
+            if(slotPlacement.isPlacable && slotPlacement.placedCard == null)
+            {
+                isFailed = false;
+            }
+        }
+
+        if(isFailed)
+        {
+            LoseBanSosGame();
+        }
+    }
+
+    private void CompleteBanSosGame()
+    {
+        winLogo.SetActive(true);
+    }
+
+    private void LoseBanSosGame()
+    {
+        loseLogo.SetActive(true);
     }
 
     public void LockAllSlots()
