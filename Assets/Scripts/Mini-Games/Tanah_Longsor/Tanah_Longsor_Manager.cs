@@ -24,6 +24,8 @@ public class Tanah_Longsor_Manager : MonoBehaviour
     private int amountOfVictim = 0;
     private int victimRescued = 0;
 
+    private bool isStarted = false;
+
     /*[Header("Earth Stability Meter")]
     public float maxStability;
     public float currStability;*/
@@ -32,12 +34,17 @@ public class Tanah_Longsor_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Initialize();
+        //Initialize();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!isStarted)
+        {
+            return;
+        }
+
         if (currTime >= gameLength)
         {
             EndMinigame();
@@ -46,6 +53,11 @@ public class Tanah_Longsor_Manager : MonoBehaviour
         {
             UpdateTimer();
         }
+    }
+
+    public void StartGame()
+    {
+        Initialize();
     }
 
     public void Initialize()
@@ -57,7 +69,7 @@ public class Tanah_Longsor_Manager : MonoBehaviour
 
         currTime = 0f;
 
-
+        isStarted = true;
         tools = GetComponent<Tools_Manager>();
         SpawnVictim();
     }
@@ -95,7 +107,7 @@ public class Tanah_Longsor_Manager : MonoBehaviour
         float offsetX = UnityEngine.Random.Range(-bounds.extents.x, bounds.extents.x);
         float offsetY = UnityEngine.Random.Range(-bounds.extents.y, bounds.extents.y);
 
-        return new Vector3(bounds.center.x + offsetX, bounds.center.y + offsetY , 3);
+        return new Vector3(bounds.center.x + offsetX, bounds.center.y + offsetY , bounds.center.z + 4);
     }
 
     private void UpdateTimer()
@@ -108,5 +120,7 @@ public class Tanah_Longsor_Manager : MonoBehaviour
     public void EndMinigame()
     {
         Cursor.visible = true;
+
+        General_Game_Manager.instance.CompleteTanahLongsor();
     }
 }

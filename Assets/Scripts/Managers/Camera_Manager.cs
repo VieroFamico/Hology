@@ -104,6 +104,15 @@ public class Camera_Manager : MonoBehaviour
         {
             rightButton.gameObject.SetActive(false);
         }
+
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            MoveCameraToTarget(currPos - 1);
+        }
+        else if(Input.GetKeyDown(KeyCode.D))
+        {
+            MoveCameraToTarget(currPos + 1);
+        }
     }
 
     void MoveCameraToTarget(int target)

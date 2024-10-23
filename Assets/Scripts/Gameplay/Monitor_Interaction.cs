@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Monitor_Interaction : MonoBehaviour
 {
@@ -50,6 +51,11 @@ public class Monitor_Interaction : MonoBehaviour
 
     private void HandleMonitorSelection()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 

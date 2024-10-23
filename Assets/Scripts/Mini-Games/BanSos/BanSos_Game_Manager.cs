@@ -37,6 +37,8 @@ public class BanSos_Game_Manager : MonoBehaviour
     public bool hasPlacedFirstCard = false;
 
     public bool hasStarted = false;
+    public bool isCompleted = false;
+    public bool isFailed = false;
 
     void Start()
     {
@@ -73,6 +75,9 @@ public class BanSos_Game_Manager : MonoBehaviour
 
     private IEnumerator StartingProcess()
     {
+        isCompleted = false;
+        isFailed = false;
+
         while (!General_Game_Manager.instance.dayHasStarted)
         {
             yield return new WaitForSeconds(0.2f);
@@ -284,11 +289,17 @@ public class BanSos_Game_Manager : MonoBehaviour
 
     private void CompleteBanSosGame()
     {
+        isCompleted = true;
+        isFailed = false;
         winLogo.SetActive(true);
+
+        General_Game_Manager.instance.CompleteBanSos();
     }
 
     private void LoseBanSosGame()
     {
+        isCompleted = false;
+        isFailed = true;
         loseLogo.SetActive(true);
     }
 

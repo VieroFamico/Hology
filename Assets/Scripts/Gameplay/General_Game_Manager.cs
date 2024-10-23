@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class General_Game_Manager : MonoBehaviour
@@ -25,8 +26,15 @@ public class General_Game_Manager : MonoBehaviour
     public Light emergencyLight;
 
     [Header("Mini-Games to Solve")]
+    public GameObject randomLocToSpawnDisaster;
     public bool isInMiniGames = false;
-    public List<GameObject> Mini_Games;
+    public List<GameObject> activeDisaster = new List<GameObject>();
+
+    public BanSos_Game_Manager banSosGameManager;
+    public Tanah_Longsor_Manager tanahLongsorManager;
+
+    public bool banSosIsCompleted;
+    public bool tanahLongsorIsCompleted;
 
     [Header("Day Has Started")]
     public bool dayHasStarted;
@@ -124,4 +132,30 @@ public class General_Game_Manager : MonoBehaviour
         day_manager.currDay = 1;
         day_manager.Initialize();
     }
+
+    public void CompleteBanSos()
+    {
+        banSosIsCompleted = true;
+
+        if (tanahLongsorIsCompleted)
+        {
+            GoToEndScene();
+        }
+    }
+
+    public void CompleteTanahLongsor()
+    {
+        tanahLongsorIsCompleted = true;
+
+        if (banSosIsCompleted)
+        {
+            GoToEndScene();
+        }
+    }
+
+    public void GoToEndScene()
+    {
+        SceneManager.LoadSceneAsync(1);
+    }
+
 }

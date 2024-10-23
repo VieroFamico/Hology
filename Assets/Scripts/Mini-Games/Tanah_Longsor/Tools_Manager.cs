@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Tools_Manager : MonoBehaviour
 {
     [Header("Camera")]
+    public Camera gameCamera;
     public CinemachineVirtualCamera virtualCamera;
     private CinemachineBasicMultiChannelPerlin vCamShake;
 
@@ -16,9 +17,11 @@ public class Tools_Manager : MonoBehaviour
     public Transform drillRadiusIndicator;
     public ParticleSystem drillParticleSystem;
     public Animator drillAnimator;
+    public AudioClip drillAudioClip;
+    public AudioSource drillAudioSource;
     public float drillRadius;
     public float drillDuration = 5f; // Time it takes for the drill to complete in seconds
-    public float targetZPosAfterDrill = 0f;
+    public float targetZOffsetPosAfterDrill = 0f;
 
     [Header("Acoustic Detector")]
     public Button acousticDetectorButton;
@@ -104,7 +107,7 @@ public class Tools_Manager : MonoBehaviour
     void HandleAcousticDetector()
     {
         Vector3 mousePosition = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        Ray ray = gameCamera.ScreenPointToRay(mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, terrainLayerMask))
@@ -177,7 +180,7 @@ public class Tools_Manager : MonoBehaviour
         }
 
         Vector3 mousePosition = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        Ray ray = gameCamera.ScreenPointToRay(mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, terrainLayerMask))
@@ -185,7 +188,7 @@ public class Tools_Manager : MonoBehaviour
             // Display an area around the mouse pointer like a radar
             Vector3 drillPosition = hit.point;
             drillRadiusIndicator.transform.position = drillPosition;
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButtonDown(0))
             {
                 Debug.Log(drillPosition);
                 StartCoroutine(StartDrilling(drillPosition));
@@ -203,12 +206,14 @@ public class Tools_Manager : MonoBehaviour
 
         drillParticleSystem.Play();
         drillAnimator.SetBool("Drill", true);
+        drillAudioSource.clip = drillAudioClip;
+        drillAudioSource.Play();
 
         vCamShake.m_FrequencyGain = 1;
 
         Victim victim = null;
         float victimCurrZPos = 0;
-        float targetZPos = targetZPosAfterDrill;
+        
 
 
         float distanceToVictim = Vector3.Distance(drillPosition, currentVictim.transform.position);
@@ -219,6 +224,7 @@ public class Tools_Manager : MonoBehaviour
             victimCurrZPos = victim.transform.position.z;
         }
 
+        float targetZPos = victim.transform.position.z + targetZOffsetPosAfterDrill;
 
         while (drillTimer < drillDuration)
         {
@@ -251,6 +257,7 @@ public class Tools_Manager : MonoBehaviour
 
         drillParticleSystem.Stop();
         drillAnimator.SetBool("Drill", false);
+        drillAudioSource.Stop();
 
         vCamShake.m_FrequencyGain = 0;
     }
