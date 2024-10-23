@@ -125,13 +125,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         // Update slot placement
         slot.placedCard = this;
         slot.isPlacable = false; // Slot is no longer available
+        slot.LockSlot();
 
         // Move the card into the slot's position
         cardRectTransform.SetParent(slot.transform);
         cardRectTransform.anchoredPosition = Vector2.zero; // Center in slot
         isPlaced = true; // Mark card as placed
-
-        gameManager.PlayCard(this);
 
         int x = slot.xCoordinate;
         int y = slot.yCoordinate;
@@ -151,5 +150,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                 }
             }
         }
+
+        gameManager.PlayCard(this);
     }
 }

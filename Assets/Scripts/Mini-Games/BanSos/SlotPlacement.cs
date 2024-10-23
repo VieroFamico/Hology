@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SlotPlacement : MonoBehaviour
 {
@@ -13,11 +14,13 @@ public class SlotPlacement : MonoBehaviour
     public void LockSlot()
     {
         isPlacable = false;
+        GetComponent<Image>().color = Color.white;
     }
 
     public void UnlockSlot()
     {
         isPlacable = true;
+        GetComponent<Image>().color = Color.green;
     }
 
 

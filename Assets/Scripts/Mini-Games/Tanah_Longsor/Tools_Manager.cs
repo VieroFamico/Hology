@@ -13,7 +13,9 @@ public class Tools_Manager : MonoBehaviour
 
     [Header("Drill Tools")]
     public Button drillButton;
-    public SpriteRenderer drillRadiusIndicator;
+    public Transform drillRadiusIndicator;
+    public ParticleSystem drillParticleSystem;
+    public Animator drillAnimator;
     public float drillRadius;
     public float drillDuration = 5f; // Time it takes for the drill to complete in seconds
     public float targetZPosAfterDrill = 0f;
@@ -44,6 +46,8 @@ public class Tools_Manager : MonoBehaviour
     {
         vCamShake = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
+        acousticDetectorIndicator.gameObject.SetActive(false);
+        drillRadiusIndicator.gameObject.SetActive(false);
 
         // Add listeners to the buttons to switch tools
         drillButton.onClick.AddListener(() => SelectTool("Drill"));
@@ -197,6 +201,9 @@ public class Tools_Manager : MonoBehaviour
         drillButton.enabled = false;
         acousticDetectorButton.enabled = false;
 
+        drillParticleSystem.Play();
+        drillAnimator.SetBool("Drill", true);
+
         vCamShake.m_FrequencyGain = 1;
 
         Victim victim = null;
@@ -241,6 +248,9 @@ public class Tools_Manager : MonoBehaviour
         isDrilling = false;
         drillButton.enabled = true;
         acousticDetectorButton.enabled = true;
+
+        drillParticleSystem.Stop();
+        drillAnimator.SetBool("Drill", false);
 
         vCamShake.m_FrequencyGain = 0;
     }
